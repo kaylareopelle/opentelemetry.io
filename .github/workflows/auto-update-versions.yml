@@ -29,4 +29,4 @@ jobs:
           .github/workflows/scripts/auto-update-version.sh semantic-conventions semconv scripts/content-modules/adjust-pages.pl
         env:
           # change this to secrets.GITHUB_TOKEN when testing against a fork
-          GH_TOKEN: ${{ secrets.OPENTELEMETRYBOT_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
