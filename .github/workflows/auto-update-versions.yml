@@ -10,6 +10,10 @@ jobs:
   auto-update-versions:
     name: Auto-update versions
     runs-on: ubuntu-20.04
+    if: github.repository == 'open-telemetry/opentelemetry.io'
+    env:
+      DEPTH: --depth 100 # submodule clone depth
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -27,6 +31,7 @@ jobs:
           .github/workflows/scripts/auto-update-version.sh opentelemetry-specification spec scripts/content-modules/adjust-pages.pl
           .github/workflows/scripts/auto-update-version.sh opentelemetry-proto otlp scripts/content-modules/adjust-pages.pl
           .github/workflows/scripts/auto-update-version.sh semantic-conventions semconv scripts/content-modules/adjust-pages.pl
+          .github/workflows/scripts/auto-update-version.sh semantic-conventions-java semconvJavaVersion content/en/docs/instrumentation/java/_index.md
         env:
           # change this to secrets.GITHUB_TOKEN when testing against a fork
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

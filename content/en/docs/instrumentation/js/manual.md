@@ -466,9 +466,9 @@ const tracer = opentelemetry.trace.getTracer(
 
 The values of `instrumentation-scope-name` and `instrumentation-scope-version`
 should uniquely identify the
-[instrumentation scope](/docs/specs/otel/glossary/#instrumentation-scope), such
-as the package, module or class name. While the name is required, the version is
-still recommended despite being optional.
+[Instrumentation Scope](/docs/concepts/instrumentation-scope/), such as the
+package, module or class name. While the name is required, the version is still
+recommended despite being optional.
 
 It's generally recommended to call `getTracer` in your app when you need it
 rather than exporting the `tracer` instance to the rest of your app. This helps
@@ -476,7 +476,7 @@ avoid trickier application load issues when other required dependencies are
 involved.
 
 In the case of the [example app](#example-app), there are two places where a
-tracer may be acquired with an appropriate instrumentation scope:
+tracer may be acquired with an appropriate Instrumentation Scope:
 
 First, in the _application file_ `app.ts` (or `app.js`):
 
@@ -920,8 +920,8 @@ function rollTheDice(rolls, min, max) {
 There are semantic conventions for spans representing operations in well-known
 protocols like HTTP or database calls. Semantic conventions for these spans are
 defined in the specification at
-[Trace Semantic Conventions](/docs/specs/otel/trace/semantic_conventions/). In
-the simple example of this guide the source code attributes can be used.
+[Trace Semantic Conventions](/docs/specs/semconv/general/trace/). In the simple
+example of this guide the source code attributes can be used.
 
 First add the semantic conventions as a dependency to your application:
 
@@ -996,17 +996,17 @@ const someFunction = (spanToLinkFrom) => {
   const options = {
     links: [
       {
-         context: spanToLinkFrom.spanContext()
-      }
-    ]
+        context: spanToLinkFrom.spanContext(),
+      },
+    ],
   };
 
-  tracer.startActiveSpan('app.someFunction', options: options, span => {
+  tracer.startActiveSpan('app.someFunction', options, (span) => {
     // Do some work...
 
     span.end();
   });
-}
+};
 ```
 
 ### Span Status
@@ -1202,21 +1202,21 @@ Node.js or Web SDKs.
 
 ## Metrics
 
-To start [metrics](/docs/concepts/signals/metrics), you'll need to have an
-initialized `MeterProvider` that lets you create a `Meter`. `Meter`s let you
-create `Instrument`s that you can use to create different kinds of metrics.
+To start producing [metrics](/docs/concepts/signals/metrics), you'll need to
+have an initialized `MeterProvider` that lets you create a `Meter`. `Meter`s let
+you create `Instrument`s that you can use to create different kinds of metrics.
 OpenTelemetry JavaScript currently supports the following `Instrument`s:
 
-- Counter, a synchronous instrument which supports non-negative increments
-- Asynchronous Counter, a asynchronous instrument which supports non-negative
+- Counter, a synchronous instrument that supports non-negative increments
+- Asynchronous Counter, an asynchronous instrument which supports non-negative
   increments
-- Histogram, a synchronous instrument which supports arbitrary values that are
-  statistically meaningful, such as histograms, summaries or percentile
-- Asynchronous Gauge, an asynchronous instrument which supports non-additive
+- Histogram, a synchronous instrument that supports arbitrary values that are
+  statistically meaningful, such as histograms, summaries, or percentile
+- Asynchronous Gauge, an asynchronous instrument that supports non-additive
   values, such as room temperature
-- UpDownCounter, a synchronous instrument which supports increments and
-  decrements, such as number of active requests
-- Asynchronous UpDownCounter, an asynchronous instrument which supports
+- UpDownCounter, a synchronous instrument that supports increments and
+  decrements, such as the number of active requests
+- Asynchronous UpDownCounter, an asynchronous instrument that supports
   increments and decrements
 
 For more on synchronous and asynchronous instruments, and which kind is best
@@ -1408,11 +1408,11 @@ instruments are performed once per export cycle.
 
 Asynchronous instruments are useful in several circumstances, such as:
 
-- When updating a counter is not computationally cheap, and thus you don't want
-  the currently executing thread to have to wait for that measurement
+- When updating a counter is not computationally cheap, and you don't want the
+  current executing thread to wait for the measurement
 - Observations need to happen at frequencies unrelated to program execution
   (i.e., they cannot be accurately measured when tied to a request lifecycle)
-- There is no value from knowing the precise timestamp of increments
+- There is no known timestamp for a measurement value
 
 In cases like these, it's often better to observe a cumulative value directly,
 rather than aggregate a series of deltas in post-processing (the synchronous
@@ -1421,7 +1421,7 @@ code examples below.
 
 ### Using Counters
 
-Counters can by used to measure a non-negative, increasing value.
+Counters can be used to measure a non-negative, increasing value.
 
 ```js
 const counter = myMeter.createCounter('events.counter');
@@ -1452,8 +1452,8 @@ counter.add(-1);
 
 Histograms are used to measure a distribution of values over time.
 
-For example, here's how you might report a distribution of response times for an
-API route with Express:
+For example, here's how you report a distribution of response times for an API
+route with Express:
 
 {{< tabpane text=true langEqualsHeader=true >}} {{% tab TypeScript %}}
 
